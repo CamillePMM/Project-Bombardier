@@ -1,0 +1,498 @@
+Sub Main(criterionNew As Boolean, criterionAsIs As Boolean, criterionChange As Boolean)
+    
+    'On Error GoTo errorhandler
+    
+    'Declaration of variables for excel file
+    Dim xlApp As Excel.Application
+    Dim xlBook As Excel.Workbook
+    Dim xlPathName As String
+    Dim xlFileName As String
+    Dim SheetMain As Excel.Worksheet
+    Dim SheetMgmtSummary As Excel.Worksheet
+    Dim SheetBB As Excel.Worksheet
+ 
+    'Open excel file
+    xlPathName = ThisWorkbook.path
+    xlFileName = "\ReUseFactorBtbsV9 - Doc5.xlsm"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlBook = xlApp.Workbooks.Open(xlPathName & xlFileName, ReadOnly:=True)
+    Set SheetMain = xlBook.Sheets("Doc5-Main")
+    Set SheetMgmtSummary = xlBook.Sheets("Mgmt Summary")
+    Set SheetBB = xlBook.Sheets("Doc5-BB")
+    
+    'Declaration of variables for powerpoint file
+    Dim pptApp As PowerPoint.Application
+    Dim pptBook As PowerPoint.Presentation
+    Dim pptPathName As String
+    Dim pptFileName As String
+    
+    'Open powerpoint file
+    pptPathName = ThisWorkbook.path
+    pptFileName = "\020996Ar01en Doc #5 Technical Summary TEMPLATE_20200423.pptx"
+    Set pptApp = CreateObject("PowerPoint.Application")
+    Set pptBook = pptApp.Presentations.Open(pptPathName & pptFileName)
+    'Set pptBook = pptApp.Presentations.Open(pptPathName & pptFileName, WithWindow:=msoFalse)
+    
+    'Retrieving the column numbers from the DOC5-BB sheet in the excel file
+    Dim numberColumns As Integer
+    numberColumns = SheetBB.Cells(1, Columns.Count).End(xlToLeft).Column
+    
+    Dim columnCode As Integer
+    Dim columnObject As Integer
+    Dim columnChapter As Integer
+    Dim columnApplicable As Integer
+    Dim columnSValue As Integer
+    Dim columnSolutionGap As Integer
+    Dim columnBBStatus As Integer
+    Dim columnReUseBB As Integer
+    Dim columnRiskIndex As Integer
+    Dim columnTRL As Integer
+    Dim columnIRL As Integer
+    Dim columnDonorValue As Integer
+    Dim columnDonorGap As Integer
+    Dim columnGapStrategy As Integer
+    Dim columnROM As Integer
+    Dim columnComments As Integer
+    Dim columnResponsible As Integer
+    
+    columnCode = 0
+    columnObject = 0
+    columnChapter = 0
+    columnApplicable = 0
+    columnSValue = 0
+    columnSolutionGap = 0
+    columnBBStatus = 0
+    columnReUseBB = 0
+    columnRiskIndex = 0
+    columnTRL = 0
+    columnIRL = 0
+    columnDonorValue = 0
+    columnDonorGap = 0
+    columnGapStrategy = 0
+    columnROM = 0
+    columnComments = 0
+    columnResponsible = 0
+    
+    Dim i As Integer
+    i = 1
+    
+    For i = 1 To numberColumns
+        Select Case SheetBB.Cells(1, i)
+            Case Is = "BTBSCode_BT"
+                columnCode = i
+            Case Is = "Object Heading"
+                columnObject = i
+            Case Is = "Chapter"
+                columnChapter = i
+            Case Is = "Applicability_BT"
+                columnApplicable = i
+            Case Is = "S_Value_BT"
+                columnSValue = i
+            Case Is = "Solution Gap Summary"
+                columnSolutionGap = i
+            Case Is = "S_BBStatus_BT"
+                columnBBStatus = i
+            Case Is = "ReUseBB_DXL_BT"
+                columnReUseBB = i
+            Case Is = "RiskIndex_BT"
+                columnRiskIndex = i
+            Case Is = "S_TRL_BT"
+                columnTRL = i
+            Case Is = "S_IRL_BT"
+                columnIRL = i
+            Case Is = "zadm_DonorValue_BT"
+                columnDonorValue = i
+            Case Is = "Donor Gap Summary"
+                columnDonorGap = i
+            Case Is = "S_GapStrategy_BT"
+                columnGapStrategy = i
+            Case Is = "ROM details"
+                columnROM = i
+            Case Is = "Internal Comments"
+                columnComments = i
+            Case Is = "BBOwner_BT"
+                columnResponsible = i
+            Case Else
+        
+        End Select
+                
+    Next i
+    
+    If columnCode = 0 _
+    Or columnObject = 0 _
+    Or columnChapter = 0 _
+    Or columnApplicable = 0 _
+    Or columnSValue = 0 _
+    Or columnSolutionGap = 0 _
+    Or columnBBStatus = 0 _
+    Or columnReUseBB = 0 _
+    Or columnRiskIndex = 0 _
+    Or columnTRL = 0 _
+    Or columnIRL = 0 _
+    Or columnDonorValue = 0 _
+    Or columnDonorGap = 0 _
+    Or columnGapStrategy = 0 _
+    Or columnROM = 0 _
+    Or columnComments = 0 _
+    Or columnResponsible = 0 Then
+        UserForm1.Label1.Caption = "Check the columns name in the DOC05-BB sheet of the excel file"
+        UserForm1.Show
+        Exit Sub
+    End If
+    
+    'Retrieving the slide numbers in the powerpoint file
+    Dim slidePresentation As Integer
+    Dim slideRevisionLog As Integer
+    Dim slideHeatmap As Integer
+    Dim slideRisks As Integer
+    Dim slideDocumentation As Integer
+    Dim slideBB As Integer
+    
+    slidePresentation = 0
+    slideRevisionLog = 0
+    slideHeatmap = 0
+    slideRisks = 0
+    slideDocumentation = 0
+    slideBB = 0
+    
+    Dim lastSlide As Integer
+    lastSlide = pptBook.Slides.Count
+    
+    Dim find As Integer
+    find = 0
+    
+    i = 1
+    
+    For i = 1 To lastSlide
+        For Each forme In pptBook.Slides(i).Shapes
+            Select Case forme.Name
+                Case Is = "DOORS@Bid / Project"
+                    slidePresentation = i
+                    find = find + 1
+                Case Is = "DOORS@Revision Log"
+                    slideRevisionLog = i
+                    find = find + 1
+                Case Is = "DOORS@Product Change Risk Heatmap"
+                    slideHeatmap = i
+                    find = find + 1
+                Case Is = "DOORS@Risks and non-compliance"
+                    slideRisks = i
+                    find = find + 1
+                Case Is = "DOORS@Documentation"
+                    slideDocumentation = i
+                    find = find + 1
+                Case Is = "DOORS@Chapter"
+                    slideBB = i
+                    find = find + 1
+                Case Else
+                
+            End Select
+        Next
+    
+        If find = 6 And slideBB <> 0 Then
+            Exit For
+        End If
+    Next i
+    
+    If slideBB = 0 Then
+        UserForm1.Label1.Caption = "Check the box names of the template"
+        UserForm1.Show
+        Exit Sub
+    End If
+    
+    
+    
+    '*** Presentation Slide ***
+    
+    'Retrieving informations from the excel file
+    Dim Title As String
+    Title = "Bid / Project:" & Chr(13) & Chr(10) & _
+            SheetMain.Cells(3, 2) & Chr(13) & Chr(10) & _
+            "Variant:" & Chr(13) & Chr(10) & _
+            SheetMain.Cells(5, 2) & Chr(13) & Chr(10) & _
+            Chr(13) & Chr(10) & _
+            "DOC#05" & Chr(13) & Chr(10) & _
+            "Technical Summary"
+    
+    Dim Subtitle As String
+    Subtitle = "Responsible: " & SheetMain.Cells(1, 2) & " (Chief Engineer)" & Chr(13) & Chr(10) & _
+                "Date: " & SheetMain.Cells(7, 2) & Chr(13) & Chr(10) & _
+                "Revision: " & SheetMain.Cells(9, 2) & Chr(13) & Chr(10) & _
+                Chr(13) & Chr(10) & _
+                "Product Family: " & SheetMain.Cells(6, 2) & Chr(13) & Chr(10) & _
+                "Opportunity Number: " & SheetMain.Cells(4, 2)
+    
+    'Filling the powerpoint boxes
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text = Title
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text = Subtitle
+    
+    'Layout design
+    'Font color for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Bid / Project:"), Len("Bid / Project:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Variant:"), Len("Variant:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "DOC#05"), Len("DOC#05")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Technical Summary"), Len("Technical Summary")).Font.Color = RGB(255, 255, 255)
+    
+    'Font size for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Size = 24
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "DOC#05"), Len("DOC#05")).Font.Size = 20
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Technical Summary"), Len("Technical Summary")).Font.Size = 14
+    
+    'Bold for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Bold = True
+    
+    'Font color for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "(Chief Engineer)"), Len("(Chief Engineer)")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Date:"), Len("Date:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Revision:"), Len("Revision:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Product Family:"), Len("Product Family:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Opportunity Number:"), Len("Opportunity Number:")).Font.Color = RGB(255, 255, 255)
+    
+    'Font size for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Size = 16
+    
+    'Bold for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Bold = False
+    
+    
+    
+    '*** Revision Log Slide ***
+    
+    'Filling the first line of the array
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 1).Shape.TextFrame.TextRange.Text = SheetMain.Cells(9, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 2).Shape.TextFrame.TextRange.Text = SheetMain.Cells(7, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 3).Shape.TextFrame.TextRange.Text = SheetMain.Cells(8, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 4).Shape.TextFrame.TextRange.Text = SheetMain.Cells(10, 2)
+    
+    'Layout design (color and size)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 1).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 1).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 2).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 2).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 3).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 3).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 4).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(2, 4).Shape.TextFrame.TextRange.Font.Size = 14
+    
+    
+    
+    '*** Heatmap Slide ***
+    
+    'Copy of the excel table
+    SheetMgmtSummary.Range(SheetMgmtSummary.Cells(2, 2), SheetMgmtSummary.Cells(41, 14)).CopyPicture
+    pptBook.Slides(slideHeatmap).Shapes.Paste
+    
+    Dim heatmapName As String
+    heatmapName = ""
+    
+    For Each forme In pptBook.Slides(slideHeatmap).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            heatmapName = forme.Name
+            Exit For
+        End If
+    Next
+    
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Height = 400
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Top = 80
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Left = 100
+    
+    
+    
+    '*** Risks Slide ***
+    
+    'Copy of the excel table
+    SheetMain.Range(SheetMain.Cells(1, 4), SheetMain.Cells(26, 5)).CopyPicture
+    pptBook.Slides(slideRisks).Shapes.Paste
+    
+    Dim risksName As String
+    risksName = ""
+    
+    For Each forme In pptBook.Slides(slideRisks).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            risksName = forme.Name
+            Exit For
+        End If
+    Next
+    
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Height = 300
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Left = 580
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Top = 120
+    
+    
+    
+    '*** Documentation Slide ***
+    
+    'Identification of the line to be filled
+    Dim lineToFill As Integer
+    lineToFill = 0
+    
+    i = 0
+    
+    Dim arraySize As Integer
+    arraySize = pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Rows.Count
+    
+    For i = 1 To arraySize
+        If pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(i, 1).Shape.TextFrame.TextRange.Text = "DOC#42 (incl. KPL)" Then
+            lineToFill = i
+            Exit For
+        End If
+    Next i
+    
+    'Filling the table with the new data
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Text = SheetMain.Cells(9, 2)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Text = SheetMain.Cells(8, 2)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Text = SheetMain.Cells(10, 2)
+    
+    'Layout design (color and size)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Size = 14
+    
+    
+    
+    '*** BB Slide ***
+    
+    Dim lastLine As Integer
+    lastLine = SheetBB.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Dim lastSection As Integer
+    lastSection = 0
+    
+    Dim copy As Boolean
+    copy = True
+    
+    lastSlide = 0
+    
+    Dim section As String
+    Dim code As String
+    Dim object As String
+    Dim heading As String
+    Dim applicable As String
+    Dim sValue As String
+    Dim solutionGap As String
+    Dim bbStatus As String
+    Dim reUseBB As String
+    Dim riskIndex As String
+    Dim trl As String
+    Dim irl As String
+    Dim donorValue As String
+    Dim donorGap As String
+    Dim gapStrategy As String
+    Dim ROM As String
+    Dim comments As String
+    Dim responsible As String
+    
+    Dim toAdd As Boolean
+    toAdd = True
+    
+    'Check for each line if we have to add slides
+    For i = 2 To lastLine
+        If SheetBB.Cells(i, columnApplicable) = "Applicable" Then
+            code = SheetBB.Cells(i, columnCode)
+            object = SheetBB.Cells(i, columnObject)
+            heading = SheetBB.Cells(i, columnChapter)
+            applicable = SheetBB.Cells(i, columnApplicable)
+            sValue = SheetBB.Cells(i, columnSValue)
+            solutionGap = SheetBB.Cells(i, columnSolutionGap)
+            bbStatus = SheetBB.Cells(i, columnBBStatus)
+            reUseBB = CStr(SheetBB.Cells(i, columnReUseBB) * 100) & "%"
+            riskIndex = SheetBB.Cells(i, columnRiskIndex)
+            trl = SheetBB.Cells(i, columnTRL)
+            irl = SheetBB.Cells(i, columnIRL)
+            donorValue = SheetBB.Cells(i, columnDonorValue)
+            donorGap = SheetBB.Cells(i, columnDonorGap)
+            gapStrategy = SheetBB.Cells(i, columnGapStrategy)
+            ROM = SheetBB.Cells(i, columnROM)
+            comments = SheetBB.Cells(i, columnComments)
+            responsible = SheetBB.Cells(i, columnResponsible)
+            toAdd = True
+            
+            Select Case bbStatus
+                Case Is = "New"
+                    If criterionNew = False And ROM = "" Then
+                        toAdd = False
+                    End If
+                Case Is = "As Is"
+                    If criterionAsIs = False And ROM = "" Then
+                        toAdd = False
+                    End If
+                Case Is = "Change"
+                    If criterionChange = False And ROM = "" Then
+                        toAdd = False
+                    End If
+                Case Else
+                
+            End Select
+            
+            If toAdd Then
+                Select Case VBA.Left(code, 2)
+                    Case Is = "DP"
+                        section = "Design Policies and Processes"
+                    Case Is = "PA"
+                        section = "Product Architecture Concept"
+                    Case Is = "0R"
+                        section = "Vehicle Operability and Integration"
+                    Case Is = "1P"
+                        section = "Vehicle Performance"
+                    Case Is = "2F"
+                        section = "Vehicle Functions"
+                    Case Is = "3I"
+                        section = "Vehicle Arrangement and Integration"
+                    Case Is = "4S"
+                        section = "Vehicle Sub-Systems"
+                    Case Is = "5X"
+                        section = "Project, Process and Non-Product Requirements"
+                    Case Else
+                
+                End Select
+                
+                lastSlide = pptBook.Slides.Count
+                lastSection = pptBook.SectionProperties.Count
+                If copy = True Then
+                    pptBook.SectionProperties.Rename sectionIndex:=lastSection, sectionName:=section
+                    copy = False
+                Else
+                    If pptBook.SectionProperties.Name(lastSection) = section Then
+                        pptBook.Slides(lastSlide - 1).Duplicate
+                        pptBook.Slides(lastSlide + 1).Duplicate
+                        pptBook.Slides(lastSlide).MoveTo (lastSlide + 1)
+                    Else
+                        pptBook.Slides(lastSlide - 1).Duplicate
+                        pptBook.Slides(lastSlide + 1).Duplicate
+                        pptBook.SectionProperties.AddSection sectionIndex:=lastSection + 1
+                        pptBook.SectionProperties.Rename sectionIndex:=lastSection + 1, sectionName:=section
+                        pptBook.Slides(lastSlide + 2).MoveToSectionStart (lastSection + 1)
+                        pptBook.Slides(lastSlide).MoveToSectionStart (lastSection + 1)
+                    End If
+                End If
+                
+                lastSlide = pptBook.Slides.Count
+                Call ModuleAdditionalFunctions.Import(pptBook, lastSlide - 1, code, object, heading, sValue, solutionGap, bbStatus, reUseBB, riskIndex, trl, irl, donorValue, donorGap, gapStrategy, ROM, comments, responsible)
+            End If
+        End If
+        UserForm2.progressBar CInt(100 * i / lastLine)
+    Next i
+    
+    Unload UserForm2
+    MsgBox "End"
+    
+    'Fermeture des fichiers
+    xlBook.Unprotect
+    xlBook.Close False
+    'pptBook.SaveCopyAs (pptPathName & "\DOC5")
+    
+    'pptBook.SaveAs ("Nouveau fichier")
+    'pptApp.Quit
+    
+    'Exit Sub
+    
+'errorhandler:
+
+End Sub
+
