@@ -1,0 +1,950 @@
+Sub Main(path As String, criterionNew As Boolean, criterionAsIs As Boolean, criterionChange As Boolean, criterionDelete As Boolean)
+
+    'Declaration of variables for excel file
+    Dim xlApp As Excel.Application
+    Dim xlBook As Excel.Workbook
+    Dim xlPathName As String
+    Dim xlFileName As String
+    Dim SheetMain As Excel.Worksheet
+    Dim SheetMgmtSummary As Excel.Worksheet
+    Dim SheetBB As Excel.Worksheet
+    Dim SheetBTBS As Excel.Worksheet
+ 
+    'Open excel file
+    xlPathName = ThisWorkbook.path
+    xlFileName = "\ReUseFactorBtbsV9 - Doc5.xlsm"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlBook = xlApp.Workbooks.Open(xlPathName & xlFileName, ReadOnly:=True)
+    Set SheetMain = xlBook.Sheets("Doc5-Main")
+    Set SheetMgmtSummary = xlBook.Sheets("Mgmt Summary")
+    Set SheetBB = xlBook.Sheets("Doc5-BB")
+    Set SheetBTBS = xlBook.Sheets("BTBS")
+
+    'Declaration of variables for powerpoint file
+    Dim pptApp As PowerPoint.Application
+    Dim pptBook As PowerPoint.Presentation
+    
+    'Open powerpoint file
+    Set pptApp = CreateObject("PowerPoint.Application")
+    Set pptBook = pptApp.Presentations.Open(path)
+    'Set pptBook = pptApp.Presentations.Open(path, WithWindow:=msoFalse)
+    
+    'Retrieving the column numbers from the DOC5-BB sheet in the excel file
+    Dim numberColumns As Integer
+    numberColumns = SheetBB.Cells(1, Columns.Count).End(xlToLeft).Column
+    
+    Dim columnCode As Integer
+    Dim columnObject As Integer
+    Dim columnChapter As Integer
+    Dim columnApplicable As Integer
+    Dim columnSValue As Integer
+    Dim columnSolutionGap As Integer
+    Dim columnBBStatus As Integer
+    Dim columnReUseBB As Integer
+    Dim columnRiskIndex As Integer
+    Dim columnTRL As Integer
+    Dim columnIRL As Integer
+    Dim columnDonorValue As Integer
+    Dim columnDonorGap As Integer
+    Dim columnGapStrategy As Integer
+    Dim columnROM As Integer
+    Dim columnComments As Integer
+    Dim columnResponsible As Integer
+    
+    columnCode = 0
+    columnObject = 0
+    columnChapter = 0
+    columnApplicable = 0
+    columnSValue = 0
+    columnSolutionGap = 0
+    columnBBStatus = 0
+    columnReUseBB = 0
+    columnRiskIndex = 0
+    columnTRL = 0
+    columnIRL = 0
+    columnDonorValue = 0
+    columnDonorGap = 0
+    columnGapStrategy = 0
+    columnROM = 0
+    columnComments = 0
+    columnResponsible = 0
+    
+    Dim i As Integer
+    i = 1
+    
+    For i = 1 To numberColumns
+        Select Case SheetBB.Cells(1, i)
+            Case Is = "BTBSCode_BT"
+                columnCode = i
+            Case Is = "Object Heading"
+                columnObject = i
+            Case Is = "Chapter"
+                columnChapter = i
+            Case Is = "Applicability_BT"
+                columnApplicable = i
+            Case Is = "S_Value_BT"
+                columnSValue = i
+            Case Is = "Solution Gap Summary"
+                columnSolutionGap = i
+            Case Is = "S_BBStatus_BT"
+                columnBBStatus = i
+            Case Is = "ReUseBB_DXL_BT"
+                columnReUseBB = i
+            Case Is = "RiskIndex_BT"
+                columnRiskIndex = i
+            Case Is = "S_TRL_BT"
+                columnTRL = i
+            Case Is = "S_IRL_BT"
+                columnIRL = i
+            Case Is = "zadm_DonorValue_BT"
+                columnDonorValue = i
+            Case Is = "Donor Gap Summary"
+                columnDonorGap = i
+            Case Is = "S_GapStrategy_BT"
+                columnGapStrategy = i
+            Case Is = "ROM details"
+                columnROM = i
+            Case Is = "Internal Comments"
+                columnComments = i
+            Case Is = "BBOwner_BT"
+                columnResponsible = i
+            Case Else
+        
+        End Select
+                
+    Next i
+    
+    If columnCode = 0 _
+    Or columnObject = 0 _
+    Or columnChapter = 0 _
+    Or columnApplicable = 0 _
+    Or columnSValue = 0 _
+    Or columnSolutionGap = 0 _
+    Or columnBBStatus = 0 _
+    Or columnReUseBB = 0 _
+    Or columnRiskIndex = 0 _
+    Or columnTRL = 0 _
+    Or columnIRL = 0 _
+    Or columnDonorValue = 0 _
+    Or columnDonorGap = 0 _
+    Or columnGapStrategy = 0 _
+    Or columnROM = 0 _
+    Or columnComments = 0 _
+    Or columnResponsible = 0 Then
+        UserForm1.Label1.Caption = "Check the columns name in the DOC05-BB sheet of the excel file"
+        UserForm1.Show
+        Exit Sub
+    End If
+    
+    'Retrieving the slide numbers in the powerpoint file
+    Dim slidePresentation As Integer
+    Dim slideRevisionLog As Integer
+    Dim slideHeatmap As Integer
+    Dim slideRisks As Integer
+    Dim slideDocumentation As Integer
+    Dim slideBB As Integer
+    
+    slidePresentation = 0
+    slideRevisionLog = 0
+    slideHeatmap = 0
+    slideRisks = 0
+    slideDocumentation = 0
+    slideBB = 0
+    
+    Dim lastSlide As Integer
+    lastSlide = pptBook.Slides.Count
+    
+    Dim find As Integer
+    find = 0
+    
+    i = 1
+    
+    For i = 1 To lastSlide
+        For Each forme In pptBook.Slides(i).Shapes
+            Select Case forme.Name
+                Case Is = "DOORS@Bid / Project"
+                    slidePresentation = i
+                    find = find + 1
+                Case Is = "DOORS@Revision Log"
+                    slideRevisionLog = i
+                    find = find + 1
+                Case Is = "DOORS@Product Change Risk Heatmap"
+                    slideHeatmap = i
+                    find = find + 1
+                Case Is = "DOORS@Risks and non-compliance"
+                    slideRisks = i
+                    find = find + 1
+                Case Is = "DOORS@Documentation"
+                    slideDocumentation = i
+                    find = find + 1
+                Case Is = "DOORS@Chapter"
+                    slideBB = i
+                    find = find + 1
+                Case Else
+                
+            End Select
+        Next
+    
+        If find = 6 And slideBB <> 0 Then
+            Exit For
+        End If
+    Next i
+    
+    If slideBB = 0 Then
+        UserForm1.Label1.Caption = "Check the box names of the template"
+        UserForm1.Show
+        Exit Sub
+    End If
+    
+    
+    
+    '*** Presentation Slide ***
+    
+    'Retrieving information from the excel file
+    Dim Title As String
+    Title = "Bid / Project:" & Chr(13) & Chr(10) & _
+            SheetMain.Cells(3, 2) & Chr(13) & Chr(10) & _
+            "Variant:" & Chr(13) & Chr(10) & _
+            SheetMain.Cells(5, 2) & Chr(13) & Chr(10) & _
+            Chr(13) & Chr(10) & _
+            "DOC#05" & Chr(13) & Chr(10) & _
+            "Technical Summary"
+    
+    Dim Subtitle As String
+    Subtitle = "Responsible: " & SheetMain.Cells(1, 2) & " (Chief Engineer)" & Chr(13) & Chr(10) & _
+                "Date: " & SheetMain.Cells(7, 2) & Chr(13) & Chr(10) & _
+                "Revision: " & SheetMain.Cells(9, 2) & Chr(13) & Chr(10) & _
+                Chr(13) & Chr(10) & _
+                "Product Family: " & SheetMain.Cells(6, 2) & Chr(13) & Chr(10) & _
+                "Opportunity Number: " & SheetMain.Cells(4, 2)
+    
+    'Filling the powerpoint boxes
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text = Title
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text = Subtitle
+    
+    'Layout design
+    'Font color for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Bid / Project:"), Len("Bid / Project:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Variant:"), Len("Variant:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "DOC#05"), Len("DOC#05")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Technical Summary"), Len("Technical Summary")).Font.Color = RGB(255, 255, 255)
+    
+    'Font size for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Size = 24
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "DOC#05"), Len("DOC#05")).Font.Size = 20
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Text, "Technical Summary"), Len("Technical Summary")).Font.Size = 14
+    
+    'Bold for the first text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Bid / Project").TextFrame.TextRange.Font.Bold = True
+    
+    'Font color for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "(Chief Engineer)"), Len("(Chief Engineer)")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Date:"), Len("Date:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Revision:"), Len("Revision:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Product Family:"), Len("Product Family:")).Font.Color = RGB(255, 255, 255)
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Text, "Opportunity Number:"), Len("Opportunity Number:")).Font.Color = RGB(255, 255, 255)
+    
+    'Font size for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Size = 16
+    
+    'Bold for the second text box
+    pptBook.Slides(slidePresentation).Shapes("DOORS@Main references").TextFrame.TextRange.Font.Bold = False
+    
+    
+    
+    '*** Revision Log Slide ***
+    Dim nbLines As Integer
+    nbLines = pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Rows.Count
+    
+    Dim lineToFill As Integer
+    lineToFill = 0
+    
+    For i = 2 To nbLines
+        Select Case pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(i, 1).Shape.TextFrame.TextRange.Text
+            Case Is = SheetMain.Cells(9, 2)
+                lineToFill = i
+                Exit For
+            Case Is = ""
+                lineToFill = i
+                Exit For
+            Case Else
+            
+        End Select
+    Next i
+    
+    If lineToFill = 0 Then
+        pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Rows.Add (nbLines)
+        lineToFill = nbLines + 1
+        pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines, 1).Shape.TextFrame.TextRange.Text = pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines + 1, 1).Shape.TextFrame.TextRange.Text
+        pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines, 2).Shape.TextFrame.TextRange.Text = pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines + 1, 2).Shape.TextFrame.TextRange.Text
+        pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines, 3).Shape.TextFrame.TextRange.Text = pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines + 1, 3).Shape.TextFrame.TextRange.Text
+        pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines, 4).Shape.TextFrame.TextRange.Text = pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(nbLines + 1, 4).Shape.TextFrame.TextRange.Text
+    End If
+    
+    'Filling the right line of the array
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 1).Shape.TextFrame.TextRange.Text = SheetMain.Cells(9, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Text = SheetMain.Cells(7, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Text = SheetMain.Cells(8, 2)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Text = SheetMain.Cells(10, 2)
+    
+    'Layout design (color and size)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 1).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 1).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideRevisionLog).Shapes("DOORS@Log array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Size = 14
+    
+    
+    
+    '*** Heatmap Slide ***
+    
+    'Delete former picture
+    For Each forme In pptBook.Slides(slideHeatmap).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            forme.Delete
+            Exit For
+        End If
+    Next
+    
+    'Copy of the excel table
+    SheetMgmtSummary.Range(SheetMgmtSummary.Cells(2, 2), SheetMgmtSummary.Cells(41, 14)).CopyPicture
+    pptBook.Slides(slideHeatmap).Shapes.Paste
+    
+    Dim heatmapName As String
+    heatmapName = ""
+    
+    For Each forme In pptBook.Slides(slideHeatmap).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            heatmapName = forme.Name
+            Exit For
+        End If
+    Next
+    
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Height = 400
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Top = 80
+    pptBook.Slides(slideHeatmap).Shapes.Range(heatmapName).Left = 100
+            
+    
+    
+    '*** Risks Slide ***
+    
+    'Delete former picture
+    For Each forme In pptBook.Slides(slideRisks).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            forme.Delete
+            Exit For
+        End If
+    Next
+    
+    'Copy of the excel table
+    SheetMain.Range(SheetMain.Cells(1, 4), SheetMain.Cells(26, 5)).CopyPicture
+    pptBook.Slides(slideRisks).Shapes.Paste
+    
+    Dim risksName As String
+    risksName = ""
+    
+    For Each forme In pptBook.Slides(slideRisks).Shapes
+        If forme.Name Like "*Image*" Or forme.Name Like "*Picture*" Then
+            risksName = forme.Name
+            Exit For
+        End If
+    Next
+    
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Height = 300
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Left = 580
+    pptBook.Slides(slideRisks).Shapes.Range(risksName).Top = 120
+
+     
+     
+    '*** Documentation Slide ***
+    
+    'Identification of the line to be filled
+    lineToFill = 0
+    i = 0
+    
+    Dim arraySize As Integer
+    arraySize = pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Rows.Count
+    
+    For i = 1 To arraySize
+        If pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(i, 1).Shape.TextFrame.TextRange.Text = "DOC#42 (incl. KPL)" Then
+            lineToFill = i
+            Exit For
+        End If
+    Next i
+    
+    'Filling the table with the new data
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Text = SheetMain.Cells(9, 2)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Text = SheetMain.Cells(8, 2)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Text = SheetMain.Cells(10, 2)
+    
+    'Layout design (color and size)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 2).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 3).Shape.TextFrame.TextRange.Font.Size = 14
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(slideDocumentation).Shapes("DOORS@Documentation array").Table.Cell(lineToFill, 4).Shape.TextFrame.TextRange.Font.Size = 14
+    
+     
+    
+    '*** BB Slide ***
+    
+    Dim lastLine As Integer
+    lastLine = SheetBB.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Dim j As Integer
+    j = 0
+    
+    Dim numberSection As Integer
+    numberSection = pptBook.SectionProperties.Count
+    
+    Dim findSection As Boolean
+    findSection = False
+    
+    Dim findPosition As Boolean
+    findPosition = False
+    
+    Dim positionSlide As Integer
+    positionSlide = 0
+    
+    Dim positionSection As Integer
+    positionSection = 0
+    
+    Dim toDelete As Boolean
+    toDelete = False
+    
+    Dim indexSection As Integer
+    indexSection = 0
+    
+    Dim section As String
+    Dim code As String
+    Dim object As String
+    Dim heading As String
+    Dim applicable As String
+    Dim sValue As String
+    Dim solutionGap As String
+    Dim bbStatus As String
+    Dim reUseBB As String
+    Dim riskIndex As String
+    Dim trl As String
+    Dim irl As String
+    Dim donorValue As String
+    Dim donorGap As String
+    Dim gapStrategy As String
+    Dim ROM As String
+    Dim comments As String
+    Dim responsible As String
+    
+    Dim sectionDP As Integer
+    Dim sectionPA As Integer
+    Dim section0R As Integer
+    Dim section1P As Integer
+    Dim section2F As Integer
+    Dim section3I As Integer
+    Dim section4S As Integer
+    Dim section5X As Integer
+    
+    sectionDP = 0
+    sectionPA = 0
+    section0R = 0
+    section1P = 0
+    section2F = 0
+    section3I = 0
+    section4S = 0
+    section5X = 0
+    
+    Dim counter As Integer
+    counter = slideBB
+    
+    lastSlide = pptBook.Slides.Count
+    
+    Dim indexPPT As Integer
+    indexPPT = 0
+    
+    Dim indexXL As Integer
+    indexXL = 0
+    
+    Dim toAdd As Boolean
+    toAdd = True
+    
+    Dim codePPT As String
+    codePPT = ""
+    
+    Dim slide1 As Boolean
+    slide1 = False
+    
+    Dim nbSlides As Integer
+    nbSlides = 0
+    
+    Dim nbSlidesTemp As Integer
+    nbSlidesTemp = 0
+    
+    For i = 2 To lastLine
+        toAdd = True
+        toDelete = False
+        lastSlide = pptBook.Slides.Count
+        slide1 = False
+        nbSlides = 0
+        
+        code = SheetBB.Cells(i, columnCode)
+        object = SheetBB.Cells(i, columnObject)
+        heading = SheetBB.Cells(i, columnChapter)
+        applicable = SheetBB.Cells(i, columnApplicable)
+        sValue = SheetBB.Cells(i, columnSValue)
+        solutionGap = SheetBB.Cells(i, columnSolutionGap)
+        bbStatus = SheetBB.Cells(i, columnBBStatus)
+        reUseBB = CStr(SheetBB.Cells(i, columnReUseBB) * 100) & "%"
+        riskIndex = SheetBB.Cells(i, columnRiskIndex)
+        trl = SheetBB.Cells(i, columnTRL)
+        irl = SheetBB.Cells(i, columnIRL)
+        donorValue = SheetBB.Cells(i, columnDonorValue)
+        donorGap = SheetBB.Cells(i, columnDonorGap)
+        gapStrategy = SheetBB.Cells(i, columnGapStrategy)
+        ROM = SheetBB.Cells(i, columnROM)
+        comments = SheetBB.Cells(i, columnComments)
+        responsible = SheetBB.Cells(i, columnResponsible)
+        
+        For j = counter To lastSlide
+            slide1 = False
+            For Each zone In pptBook.Slides(j).Shapes
+                If zone.Name = "DOORS@Gap Summary" Then
+                    slide1 = True
+                    Exit For
+                End If
+            Next
+            
+            If slide1 Then
+                toDelete = False
+                toAdd = True
+                codePPT = VBA.Left(pptBook.Slides(j).Shapes("DOORS@BTBS Code").TextFrame.TextRange.Text, InStr(1, pptBook.Slides(j).Shapes("DOORS@BTBS Code").TextFrame.TextRange.Text, " ") - 1)
+                indexPPT = ModuleAdditionalFunctions.indexDictionnary(SheetBTBS, codePPT)
+                indexXL = ModuleAdditionalFunctions.indexDictionnary(SheetBTBS, code)
+                
+                Select Case indexXL
+                    Case Is > indexPPT
+                        'On vérifie si on supprime ou pas
+                        If InStr(1, pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "No Risk") > 1 Then
+                            If criterionNew = False Then
+                                If InStr(1, pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Status : New") > 1 Then
+                                    toDelete = True
+                                End If
+                            End If
+                            If criterionAsIs = False Then
+                                If InStr(1, pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Status : As Is") > 1 Then
+                                    toDelete = True
+                                End If
+                            End If
+                            If criterionChange = False Then
+                                If InStr(1, pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Status : Change") > 1 Then
+                                    toDelete = True
+                                End If
+                            End If
+                        End If
+                        
+                        If toDelete Then
+                            nbSlides = 1
+                            nbSlidesTemp = 1
+                            For k = j + 1 To lastSlide
+                                nbSlidesTemp = nbSlides
+                                For Each zone In pptBook.Slides(k).Shapes
+                                    If zone.Name = "DOORS@BTBS Code" Or zone.Name = "DOORS@BTBS Code User" Then
+                                        If VBA.Left(zone.TextFrame.TextRange.Text, InStr(1, zone.TextFrame.TextRange.Text, " ") - 1) = codePPT Then
+                                            nbSlides = nbSlides + 1
+                                            Exit For
+                                        End If
+                                    End If
+                                Next
+                                If nbSlidesTemp = nbSlides Then
+                                    Exit For
+                                End If
+                            Next k
+                        
+                            If pptBook.SectionProperties.SlidesCount(pptBook.Slides(j).sectionIndex) = nbSlides Then
+                                pptBook.SectionProperties.Delete sectionIndex:=indexSection, deleteSlides:=True
+                            Else
+                                For k = j To j + nbSlides - 1
+                                    pptBook.Slides(j).Delete
+                                Next k
+                            End If
+                        Else
+                            counter = j + 1
+                        End If
+                           
+                    Case Is = indexPPT
+                        'On vérifie si on doit modifier ou supprimer et on quitte la boucle
+                        Select Case bbStatus
+                            Case Is = "New"
+                                If criterionNew = False And ROM = "" Then
+                                    toDelete = True
+                                End If
+                            Case Is = "As Is"
+                                If criterionAsIs = False And ROM = "" Then
+                                    toDelete = True
+                                End If
+                            Case Is = "Change"
+                                If criterionChange = False And ROM = "" Then
+                                    toDelete = True
+                                End If
+                            Case Else
+                            
+                        End Select
+                        
+                        'ajouter condition de critere delete
+                        If toDelete Then
+                            nbSlides = 1
+                            nbSlidesTemp = 1
+                            For k = j + 1 To lastSlide
+                                nbSlidesTemp = nbSlides
+                                For Each zone In pptBook.Slides(k).Shapes
+                                    If zone.Name = "DOORS@BTBS Code" Or zone.Name = "DOORS@BTBS Code User" Then
+                                        If VBA.Left(zone.TextFrame.TextRange.Text, InStr(1, zone.TextFrame.TextRange.Text, " ") - 1) = codePPT Then
+                                            nbSlides = nbSlides + 1
+                                            Exit For
+                                        End If
+                                    End If
+                                Next
+                                If nbSlidesTemp = nbSlides Then
+                                    Exit For
+                                End If
+                            Next k
+                        
+                            If pptBook.SectionProperties.SlidesCount(pptBook.Slides(j).sectionIndex) = nbSlides Then
+                                pptBook.SectionProperties.Delete sectionIndex:=indexSection, deleteSlides:=True
+                            Else
+                                For k = j To j + nbSlides - 1
+                                    pptBook.Slides(j).Delete
+                                Next k
+                            End If
+                        Else
+                            If applicable = "Applicable" Then
+                                Call ModuleAdditionalFunctions.Update(pptBook, j, code, object, heading, sValue, solutionGap, bbStatus, reUseBB, riskIndex, trl, irl, donorValue, donorGap, gapStrategy, ROM, comments, responsible)
+                                counter = j + 1
+                                Exit For
+                            Else
+                                If criterionDelete Then
+                                    nbSlides = 1
+                                    nbSlidesTemp = 1
+                                    For k = j + 1 To lastSlide
+                                        nbSlidesTemp = nbSlides
+                                        For Each zone In pptBook.Slides(k).Shapes
+                                            If zone.Name = "DOORS@BTBS Code" Or zone.Name = "DOORS@BTBS Code User" Then
+                                                If VBA.Left(zone.TextFrame.TextRange.Text, InStr(1, zone.TextFrame.TextRange.Text, " ") - 1) = codePPT Then
+                                                    nbSlides = nbSlides + 1
+                                                    Exit For
+                                                End If
+                                            End If
+                                        Next
+                                        If nbSlidesTemp = nbSlides Then
+                                            Exit For
+                                        End If
+                                    Next k
+                                
+                                    If pptBook.SectionProperties.SlidesCount(pptBook.Slides(j).sectionIndex) = nbSlides Then
+                                        pptBook.SectionProperties.Delete sectionIndex:=indexSection, deleteSlides:=True
+                                    Else
+                                        For k = j To j + nbSlides - 1
+                                            pptBook.Slides(j).Delete
+                                        Next k
+                                    End If
+                                Else
+                                    pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text = "Solution : Not Applicable"
+                                    pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text = "Main Requirements (forcing change from donor product) / Challenges / Open Topics :" & Chr(13) & Chr(10) & Chr(13) & Chr(10) & "Not Applicable"
+                                    pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+                                    pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Color = RGB(0, 0, 0)
+                                    pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Bold = False
+                                    pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(j).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Bold = True
+                                    pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+                                    pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Color = RGB(0, 0, 0)
+                                    pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Bold = False
+                                    pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(j).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Bold = True
+                                    counter = j + 1
+                                    Exit For
+                                End If
+                            End If
+                        End If
+                        Exit For
+                    
+                    Case Is < indexPPT
+                        If applicable = "Applicable" Then
+                            findSection = False
+                            'On insère des slides
+                            Select Case bbStatus
+                                Case Is = "New"
+                                    If criterionNew = False And ROM = "" Then
+                                        toAdd = False
+                                    End If
+                                Case Is = "As Is"
+                                    If criterionAsIs = False And ROM = "" Then
+                                        toAdd = False
+                                    End If
+                                Case Is = "Change"
+                                    If criterionChange = False And ROM = "" Then
+                                        toAdd = False
+                                    End If
+                                Case Else
+                                
+                            End Select
+                            
+                            If toAdd Then
+                                Select Case VBA.Left(code, 2)
+                                    Case Is = "DP"
+                                        section = "Design Policies and Processes"
+                                    Case Is = "PA"
+                                        section = "Product Architecture Concept"
+                                    Case Is = "0R"
+                                        section = "Vehicle Operability and Integration"
+                                    Case Is = "1P"
+                                        section = "Vehicle Performance"
+                                    Case Is = "2F"
+                                        section = "Vehicle Functions"
+                                    Case Is = "3I"
+                                        section = "Vehicle Arrangement and Integration"
+                                    Case Is = "4S"
+                                        section = "Vehicle Sub-Systems"
+                                    Case Is = "5X"
+                                        section = "Project, Process and Non-Product Requirements"
+                                    Case Else
+                                
+                                End Select
+                                
+                                numberSection = pptBook.SectionProperties.Count
+                                findPosition = False
+                                For m = 1 To numberSection
+                                    positionSlide = 0
+                                    If pptBook.SectionProperties.Name(m) = section Then
+                                        For k = pptBook.SectionProperties.FirstSlide(m) To pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 1
+                                            For Each forme In pptBook.Slides(k).Shapes
+                                                Select Case forme.Name
+                                                    Case Is = "DOORS@BTBS Code"
+                                                        If forme.TextFrame.TextRange > code Then
+                                                            positionSlide = k
+                                                            findPosition = True
+                                                            Exit For
+                                                        End If
+                                                    Case Is = "DOORS@BTBS Code User"
+                                                        If forme.TextFrame.TextRange > code Then
+                                                            positionSlide = k
+                                                            findPosition = True
+                                                            Exit For
+                                                        End If
+                                                    Case Else
+                                                    
+                                                End Select
+                                            Next
+                                            If findPosition Then
+                                                Exit For
+                                            End If
+                                        Next k
+                                        
+                                        If positionSlide <> 0 Then
+                                            pptBook.Slides(slideBB).Duplicate
+                                            pptBook.Slides(slideBB + 2).Duplicate
+                                            
+                                            pptBook.Slides(slideBB + 1).MoveTo (positionSlide + 1)
+                                            pptBook.Slides(slideBB + 1).MoveTo (positionSlide + 1)
+                                            Call ModuleAdditionalFunctions.Import(pptBook, positionSlide, code, object, heading, sValue, solutionGap, bbStatus, reUseBB, riskIndex, trl, irl, donorValue, donorGap, gapStrategy, ROM, comments, responsible)
+                                            counter = j + 2
+                                        Else
+                                            pptBook.Slides(slideBB).Duplicate
+                                            pptBook.Slides(slideBB + 2).Duplicate
+                                            'pptBook.Slides(pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 2).Duplicate
+                                            'pptBook.Slides(pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 1).Duplicate
+                                            
+                                            pptBook.Slides(slideBB + 1).MoveTo (pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 1)
+                                            pptBook.Slides(slideBB + 2).MoveTo (pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 1)
+                                            
+                                            'pptBook.Slides(pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 2).MoveTo (pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 3)
+                                            'If pptBook.SectionProperties.Count > m Then
+                                            '    pptBook.SectionProperties.Move sectionIndex:=m + 1, toPos:=pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) + 1
+                                            'End If
+                                            
+                                            Call ModuleAdditionalFunctions.Import(pptBook, pptBook.SectionProperties.FirstSlide(m) + pptBook.SectionProperties.SlidesCount(m) - 2, code, object, heading, sValue, solutionGap, bbStatus, reUseBB, riskIndex, trl, irl, donorValue, donorGap, gapStrategy, ROM, comments, responsible)
+                                            counter = j + 2
+                                        End If
+                                        
+                                        findSection = True
+                                        Exit For
+                                    End If
+                                Next m
+                                
+                                If findSection = False Then
+                                    'ajouter section + slide
+                                    For k = 1 To numberSection
+                                        Select Case pptBook.SectionProperties.Name(k)
+                                            Case Is = "Design Policies and Processes"
+                                                sectionDP = k
+                                            Case Is = "Product Architecture Concept"
+                                                sectionPA = k
+                                            Case Is = "Vehicle Operability and Integration"
+                                                section0R = k
+                                            Case Is = "Vehicle Performance"
+                                                section1P = k
+                                            Case Is = "Vehicle Functions"
+                                                section2F = k
+                                            Case Is = "Vehicle Arrangement and Integration"
+                                                section3I = k
+                                            Case Is = "Vehicle Sub-Systems"
+                                                section4S = k
+                                            Case Is = "Project, Process and Non-Product Requirements"
+                                                section5X = k
+                                            Case Else
+                                            
+                                        End Select
+                                    Next k
+                                    
+                                    Select Case section
+                                        Case Is = "Product Architecture Concept"
+                                            positionSection = sectionDP
+                                        Case Is = "Vehicle Operability and Integration"
+                                            If sectionPA <> 0 Then
+                                                positionSection = sectionPA
+                                            Else
+                                                positionSection = sectionDP
+                                            End If
+                                        Case Is = "Vehicle Performance"
+                                            If section0R <> 0 Then
+                                                positionSection = section0R
+                                            Else
+                                                If sectionPA <> 0 Then
+                                                    positionSection = sectionPA
+                                                Else
+                                                    positionSection = sectionDP
+                                                End If
+                                            End If
+                                        Case Is = "Vehicle Functions"
+                                            If section1P <> 0 Then
+                                                positionSection = section1P
+                                            Else
+                                                If section0R <> 0 Then
+                                                    positionSection = section0R
+                                                Else
+                                                    If sectionPA <> 0 Then
+                                                        positionSection = sectionPA
+                                                    Else
+                                                        positionSection = sectionDP
+                                                    End If
+                                                End If
+                                            End If
+                                                
+                                        Case Is = "Vehicle Arrangement and Integration"
+                                            If section2F <> 0 Then
+                                                positionSection = section2F
+                                            Else
+                                                If section1P <> 0 Then
+                                                    positionSection = section1P
+                                                Else
+                                                    If section0R <> 0 Then
+                                                        positionSection = section0R
+                                                    Else
+                                                        If sectionPA <> 0 Then
+                                                            positionSection = sectionPA
+                                                        Else
+                                                            positionSection = sectionDP
+                                                        End If
+                                                    End If
+                                                End If
+                                            End If
+                                        Case Is = "Vehicle Sub-Systems"
+                                            If section3I <> 0 Then
+                                                positionSection = section3I
+                                            Else
+                                                If section2F <> 0 Then
+                                                    positionSection = section2F
+                                                Else
+                                                    If section1P <> 0 Then
+                                                        positionSection = section1P
+                                                    Else
+                                                        If section0R <> 0 Then
+                                                            positionSection = section0R
+                                                        Else
+                                                            If sectionPA <> 0 Then
+                                                                positionSection = sectionPA
+                                                            Else
+                                                                positionSection = sectionDP
+                                                            End If
+                                                        End If
+                                                    End If
+                                                End If
+                                            End If
+                                        Case Is = "Project, Process and Non-Product Requirements"
+                                            If section4S <> 0 Then
+                                                positionSection = section4S
+                                            Else
+                                                If section3I <> 0 Then
+                                                    positionSection = section3I
+                                                Else
+                                                    If section2F <> 0 Then
+                                                        positionSection = section2F
+                                                    Else
+                                                        If section1P <> 0 Then
+                                                            positionSection = section1P
+                                                        Else
+                                                            If section0R <> 0 Then
+                                                                positionSection = section0R
+                                                            Else
+                                                                If sectionPA <> 0 Then
+                                                                    positionSection = sectionPA
+                                                                Else
+                                                                    positionSection = sectionDP
+                                                                End If
+                                                            End If
+                                                        End If
+                                                    End If
+                                                End If
+                                            End If
+                                        Case Else
+                                        
+                                    End Select
+                                    
+                                    pptBook.SectionProperties.AddSection sectionIndex:=positionSection + 1, sectionName:=section
+                                    pptBook.Slides(slideBB).Duplicate
+                                    pptBook.Slides(slideBB + 2).Duplicate
+                                                    
+                                    pptBook.Slides(slideBB + 3).MoveToSectionStart (positionSection + 1)
+                                    pptBook.Slides(slideBB + 1).MoveToSectionStart (positionSection + 1)
+                                    Call ModuleAdditionalFunctions.Import(pptBook, pptBook.SectionProperties.FirstSlide(positionSection + 1), code, object, heading, sValue, solutionGap, bbStatus, reUseBB, riskIndex, trl, irl, donorValue, donorGap, gapStrategy, ROM, comments, responsible)
+                                    counter = j + 2
+                                Else
+                                    Exit For
+                                End If
+                                
+                                Exit For
+                            End If
+                            Exit For
+                        Else
+                            Exit For
+                        End If
+                    
+                    Case Else
+                    
+                End Select
+                
+                lastSlide = pptBook.Slides.Count
+            Else
+                counter = j + 1
+            'à coder
+            End If
+        Next j
+        
+        UserForm2.progressBar CInt(100 * i / lastLine)
+    Next i
+    
+    Unload UserForm2
+    MsgBox "End"
+    
+    'Fermeture des fichiers
+    xlBook.Unprotect
+    xlBook.Close False
+    
+    'pptBook.Name = "DOC5"
+    
+    'pptBook.SaveAs ("Nouveau fichier")
+    'pptApp.Quit
+
+End Sub

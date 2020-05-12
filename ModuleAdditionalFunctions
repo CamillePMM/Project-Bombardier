@@ -1,0 +1,257 @@
+Sub Import(ByVal pptBook As PowerPoint.Presentation, numberSlide As Integer, code As String, object As String, heading As String, _
+                sValue As String, solutionGap As String, bbStatus As String, reUseBB As String, riskIndex As String, _
+                trl As String, irl As String, donorValue As String, donorGap As String, gapStrategy As String, _
+                ROM As String, comments As String, responsible As String)
+
+    'Adding titles on the first slide
+    pptBook.Slides(numberSlide).Shapes("DOORS@Chapter").TextFrame.TextRange.Text = heading
+    pptBook.Slides(numberSlide).Shapes("DOORS@BTBS Code").TextFrame.TextRange.Text = code & " " & object
+    
+    'Adding titles on the second slide
+    pptBook.Slides(numberSlide + 1).Shapes("DOORS@Chapter User").TextFrame.TextRange.Text = heading
+    pptBook.Slides(numberSlide + 1).Shapes("DOORS@BTBS Code User").TextFrame.TextRange.Text = code & " " & object
+    
+    'Adding responsible and layout design
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text = "Responsible: " & responsible
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Font.Underline = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Underline = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Color = RGB(255, 255, 255)
+    
+    'Filling of the Gap Summary box
+    Dim caseDOORS As String
+    caseDOORS = "Solution : " & sValue & Chr(13) & Chr(10) & _
+                "Solution Gap Summary : " & Chr(13) & Chr(10) & Chr(9) & Chr(149) & " " & Replace(solutionGap, Chr(10), Chr(10) & Chr(9) & Chr(149) & " ") & Chr(13) & Chr(10) & _
+                "BB Status : " & bbStatus & Chr(13) & Chr(10) & _
+                "BB Reuse : " & reUseBB & Chr(13) & Chr(10) & _
+                "Risk Index : " & riskIndex & Chr(13) & Chr(10) & _
+                "TRL (of proposed solution) : " & trl & Chr(13) & Chr(10) & _
+                "IRL (of proposed solution) : " & irl & Chr(13) & Chr(10) & _
+                Chr(13) & Chr(10) & _
+                "Donor Product : " & donorValue & Chr(13) & Chr(10) & _
+                "Donor Gap Summary : " & Chr(13) & Chr(10) & Chr(9) & Chr(149) & " " & Replace(donorGap, Chr(10), Chr(10) & Chr(9) & Chr(149) & " ") & Chr(13) & Chr(10) & _
+                "Proposed Changes : " & Chr(13) & Chr(10) & gapStrategy
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text = caseDOORS
+    
+    'Layout design for the Gap Summary box (color and bold)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution Gap Summary :"), Len("Solution Gap Summary :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Status :"), Len("BB Status :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Reuse :"), Len("BB Reuse :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Risk Index :"), Len("Risk Index :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "TRL (of proposed solution) :"), Len("TRL (of proposed solution) :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "IRL (of proposed solution) :"), Len("IRL (of proposed solution) :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Product :"), Len("Donor Product :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Gap Summary :"), Len("Donor Gap Summary :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Proposed Changes :"), Len("Proposed Changes :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Bold = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Bold = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Product :"), Len("Donor Product :")).Font.Bold = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Proposed Changes :"), Len("Proposed Changes :")).Font.Bold = True
+    
+    'Check of risks
+    Dim caseROM As String
+    caseROM = ""
+    
+    If ROM = "" Then
+        ROM = "No Risk or Opportunity raised"
+    Else
+        ROM = Replace(ROM, Chr(10) & " ", Chr(10))
+    End If
+    
+    'Checks of comments
+    If comments = "" Then
+        caseROM = "Main Requirements (forcing change from donor product) / Challenges / Open Topics :" & Chr(13) & Chr(10) & Chr(13) & Chr(10) & Replace(ROM, Chr(10) & "[One", Chr(13) & Chr(10) & Chr(13) & Chr(10) & "[One")
+    Else
+        caseROM = "Main Requirements (forcing change from donor product) / Challenges / Open Topics :" & Chr(13) & Chr(10) & Chr(13) & Chr(10) & comments & Chr(13) & Chr(10) & Chr(13) & Chr(10) & Replace(ROM, Chr(10) & "[One", Chr(13) & Chr(10) & Chr(13) & Chr(10) & "[One")
+    End If
+    
+    'Filling the ROMm Summary box
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text = caseROM
+    
+    'Layout design for the DOORS@ROMm Summary Summary box (color and bold for title)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Bold = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Bold = True
+    
+    'Layout design for the DOORS@ROMm Summary Summary box (color and bold for risks)
+    Dim debutChaine As Integer
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:"), Len("Committee Decision:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:") + Len("Committee Decision:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:"), Len("Committee Comments:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:") + Len("Committee Comments:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:"), Len("CR Details:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:") + Len("CR Details:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:"), Len("Go To New Perf:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:") + Len("Go To New Perf:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "["), InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") - InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") + Len("- [Risk]")).Font.Color = RGB(0, 0, 0)
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "["), InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") - InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") + Len("- [Risk]")).Font.Bold = True
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") + Len("- [Risk]")
+    Wend
+    
+End Sub
+
+Sub Update(ByVal pptBook As PowerPoint.Presentation, numberSlide As Integer, code As String, object As String, heading As String, _
+                sValue As String, solutionGap As String, bbStatus As String, reUseBB As String, riskIndex As String, _
+                trl As String, irl As String, donorValue As String, donorGap As String, gapStrategy As String, _
+                ROM As String, comments As String, responsible As String)
+
+    'Adding titles on the first slide
+    pptBook.Slides(numberSlide).Shapes("DOORS@Chapter").TextFrame.TextRange.Text = heading
+    pptBook.Slides(numberSlide).Shapes("DOORS@BTBS Code").TextFrame.TextRange.Text = code & " " & object
+    
+    'Adding responsible and layout design
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text = "Responsible: " & responsible
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Font.Underline = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Underline = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Responsible").TextFrame.TextRange.Text, "Responsible:"), Len("Responsible:")).Font.Color = RGB(255, 255, 255)
+    
+    'Filling of the Gap Summary box
+    Dim caseDOORS As String
+    caseDOORS = "Solution : " & sValue & Chr(13) & Chr(10) & _
+                "Solution Gap Summary : " & Chr(13) & Chr(10) & Chr(9) & Chr(149) & " " & Replace(solutionGap, Chr(10), Chr(10) & Chr(9) & Chr(149) & " ") & Chr(13) & Chr(10) & _
+                "BB Status : " & bbStatus & Chr(13) & Chr(10) & _
+                "BB Reuse : " & reUseBB & Chr(13) & Chr(10) & _
+                "Risk Index : " & riskIndex & Chr(13) & Chr(10) & _
+                "TRL (of proposed solution) : " & trl & Chr(13) & Chr(10) & _
+                "IRL (of proposed solution) : " & irl & Chr(13) & Chr(10) & _
+                Chr(13) & Chr(10) & _
+                "Donor Product : " & donorValue & Chr(13) & Chr(10) & _
+                "Donor Gap Summary : " & Chr(13) & Chr(10) & Chr(9) & Chr(149) & " " & Replace(donorGap, Chr(10), Chr(10) & Chr(9) & Chr(149) & " ") & Chr(13) & Chr(10) & _
+                "Proposed Changes : " & Chr(13) & Chr(10) & gapStrategy
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text = caseDOORS
+    
+    'Layout design for the Gap Summary box (color and bold)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution Gap Summary :"), Len("Solution Gap Summary :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Status :"), Len("BB Status :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "BB Reuse :"), Len("BB Reuse :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Risk Index :"), Len("Risk Index :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "TRL (of proposed solution) :"), Len("TRL (of proposed solution) :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "IRL (of proposed solution) :"), Len("IRL (of proposed solution) :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Product :"), Len("Donor Product :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Gap Summary :"), Len("Donor Gap Summary :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Proposed Changes :"), Len("Proposed Changes :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Font.Bold = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Solution :"), Len("Solution :")).Font.Bold = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Donor Product :"), Len("Donor Product :")).Font.Bold = True
+    pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@Gap Summary").TextFrame.TextRange.Text, "Proposed Changes :"), Len("Proposed Changes :")).Font.Bold = True
+    
+    'Check of risks
+    Dim caseROM As String
+    caseROM = ""
+    
+    If ROM = "" Then
+        ROM = "No Risk or Opportunity raised"
+    Else
+        ROM = Replace(ROM, Chr(10) & " ", Chr(10))
+    End If
+    
+    'Checks of comments
+    If comments = "" Then
+        caseROM = "Main Requirements (forcing change from donor product) / Challenges / Open Topics :" & Chr(13) & Chr(10) & Chr(13) & Chr(10) & Replace(ROM, Chr(10) & "[One", Chr(13) & Chr(10) & Chr(13) & Chr(10) & "[One")
+    Else
+        caseROM = "Main Requirements (forcing change from donor product) / Challenges / Open Topics :" & Chr(13) & Chr(10) & Chr(13) & Chr(10) & comments & Chr(13) & Chr(10) & Chr(13) & Chr(10) & Replace(ROM, Chr(10) & "[One", Chr(13) & Chr(10) & Chr(13) & Chr(10) & "[One")
+    End If
+    
+    'Filling the ROMm Summary box
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text = caseROM
+    
+    'Layout design for the DOORS@ROMm Summary Summary box (color and bold for title)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Color = RGB(0, 176, 80)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Color = RGB(0, 0, 0)
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Font.Bold = False
+    pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(1, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Main Requirements (forcing change from donor product) / Challenges / Open Topics :"), Len("Main Requirements (forcing change from donor product) / Challenges / Open Topics :")).Font.Bold = True
+    
+    'Layout design for the DOORS@ROMm Summary Summary box (color and bold for risks)
+    Dim debutChaine As Integer
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:"), Len("Committee Decision:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Decision:") + Len("Committee Decision:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:"), Len("Committee Comments:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Committee Comments:") + Len("Committee Comments:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:"), Len("CR Details:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "CR Details:") + Len("CR Details:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:"), Len("Go To New Perf:")).Font.Color = RGB(0, 0, 0)
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "Go To New Perf:") + Len("Go To New Perf:")
+    Wend
+    
+    debutChaine = 1
+    
+    While InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") > 1
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "["), InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") - InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") + Len("- [Risk]")).Font.Color = RGB(0, 0, 0)
+        pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Characters(InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "["), InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") - InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "[") + Len("- [Risk]")).Font.Bold = True
+        debutChaine = InStr(debutChaine, pptBook.Slides(numberSlide).Shapes("DOORS@ROMm Summary").TextFrame.TextRange.Text, "- [Risk]") + Len("- [Risk]")
+    Wend
+    
+End Sub
+
+Function indexDictionnary(ByVal SheetBTBS As Worksheet, code As String) As Integer
+
+    Dim i As Integer
+    i = 0
+    
+    Dim nbLignes As Integer
+    nbLignes = SheetBTBS.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Dim result As Integer
+    result = 0
+    
+    'The code search the number of the lignes of the BTBS code in sheet BTBS of the excel file
+    'It compares each ligne of the excel file with the BTBS code given in parameter
+    For i = 2 To nbLignes
+        If code = SheetBTBS.Cells(i, 1) Then
+            result = i
+            Exit For
+        End If
+    Next i
+    
+    indexDictionnary = result
+
+End Function
+
+
